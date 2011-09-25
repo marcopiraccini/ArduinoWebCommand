@@ -1,0 +1,12 @@
+Web Command Serial Library
+
+DRAFT - NOT YET COMPLETED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Generic Command library used to interact with Arudino + Ethernet shield. Listen for generic command requests, applied to generic "Endpoints". The Web part sends the request to the "endpoints" and waits for the answer. Uses code from RESTduino project (https://github.com/jjg/RESTduino) and the Arduino's Ethernet Shield tutorials. 
+
+TODO: 
+- The Endpoints will be "generic" command executors. Anyway, we have to provide a basic generic serial interaction using the NewSoftSerial library (to be renamed as SoftwareSerial). See http://arduiniana.org/2011/01/newsoftserial-11-beta/ 
+In that case, the "SerialEndpoint" will wrap a serial device and will use two Arduino digital pins (for TX and RX) that must be specified when configuring the Arduino device. 
+
+- Write the code also for the WiFi Shield (http://www.sparkfun.com/products/9954). Refactor to support both (there's a way to know which shield is connected?)
+
