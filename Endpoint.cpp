@@ -1,5 +1,5 @@
 /*
-TODO
+Endpoint.cpp
 */
 
 // When set,TODO
@@ -12,18 +12,12 @@ TODO
 #include <inttypes.h>
 #include <Stream.h>
 
-
-void Endpoint::send() { 
-}
-
-void Endpoint::receive() { 
-}
-
 //
 // Constructor
 //
-Endpoint::Endpoint(uint8_t rx, uint8_t tx) 
+Endpoint::Endpoint(String deviceName, uint8_t rx, uint8_t tx) 
 {
+  setDeviceName(deviceName);
   setTX(rx);
   setRX(tx);
 }
@@ -34,6 +28,11 @@ Endpoint::Endpoint(uint8_t rx, uint8_t tx)
 Endpoint::~Endpoint()
 {
   end();
+}
+
+void Endpoint::setDeviceName(String deviceName)
+{
+  _deviceName = deviceName;
 }
 
 void Endpoint::setTX(uint8_t tx)
@@ -50,9 +49,19 @@ void Endpoint::setRX(uint8_t rx)
 // Public methods
 //
 
-
 void Endpoint::end()
 {
 	// TODO
 }
+
+//
+// Public methods
+//
+
+String Endpoint::getDeviceName()
+{
+	return _deviceName;
+}
+
+
 

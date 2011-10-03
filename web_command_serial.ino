@@ -1,19 +1,18 @@
 #include <SPI.h>
-
 #include <Ethernet.h>
-#include <Udp.h>
-#include <Client.h>
-#include <Server.h>
-
 #include <Endpoint.h>
+#include <SerialEndpoint.h>
+
 
 /*
   Web Command Serial Library
   Generic Command library used to interact with Arudino + Ethernet shield.
-  Listen for generic command requests, applied to Endpoints. 
+  Listen for geenrci command requests, applied to Endpoints. 
   Send the request to the "endpoints"and waits 
-  for the answer. Uses code from RESTduino project (https://github.com/jjg/RESTduino)
+  for the answer.
+  Uses code from RESTduion project (https://github.com/jjg/RESTduino)
   and the Arduino's Ethernet Shield tutorials. 
+  NOTE: The ethernet shield should use pins: 10, 11, 12, 13 (to be verified).
  */
 
 // Enter a MAC address and IP address for your controller below.
@@ -24,15 +23,23 @@ byte ip[] = { 192, 168, 1, 177 };
 // Initialize the Ethernet server library
 // with the IP address and port you want to use 
 // (port 80 is default for HTTP):
-Server server(80);
+EthernetServer server(80);
 
 //  url buffer size
 #define BUFSIZE 255
 
+// The used Endpoints
+static SerialEndpoint endpoints[3] = {
+    SerialEndpoint("device1", 1,2),
+    SerialEndpoint("device2", 3,4),
+    SerialEndpoint("device3", 5,6)
+};
+
+
 void setup()
 {
   Serial.begin(9600);
-  Serial.println("Web Command Server ##################");
+  Serial.println("Web Command Server ##############################");
   Serial.print("Starting server with IP:");
   Serial.print(ip_to_str(ip));
   Serial.print(" and MAC:");
@@ -40,7 +47,7 @@ void setup()
   // start the Ethernet connection and the server:
   Ethernet.begin(mac, ip);
   server.begin();
-  Serial.println("...server started");
+  Serial.println("...server started");  
 }
 
 void loop()
@@ -59,7 +66,8 @@ void serveRequest() {
   char clientline[BUFSIZE];
   
     // listen for incoming clients
-  Client client = server.available();
+  EthernetClient client = server.available();
+  
   if (client) {
 
     //  reset input buffer
@@ -102,11 +110,11 @@ void serveRequest() {
         String outValue;
 
         if(device != NULL){
-          int selectedDevice = atoi (device);
+
           if(command != NULL){
             //  set the pin value
             Serial.print("Command for the device:");
-            Serial.print(selectedDevice);                  
+            Serial.print(device);                  
             Serial.print(" - Command:");
             Serial.println(command);               
                         
@@ -114,11 +122,11 @@ void serveRequest() {
             // PUT ACTIONS FOR THE COMMAND
             outValue = processCommand(device, command);
             
-            returnAnswer(client, selectedDevice, command, outValue);
+            returnAnswer(client, device, command, outValue);
             
           } else {
             //  assemble the json output
-            returnAnswer(client, selectedDevice, "NULL", outValue);       
+            returnAnswer(client, device, "NULL", outValue);       
           }
         } else {
           
@@ -144,7 +152,7 @@ void serveRequest() {
 /**
  * Return the JSON answer using the Client. 
  */
-void returnAnswer(Client client, String device, String command, String response) {
+void returnAnswer(EthernetClient client, String device, String command, String response) {
   String jsonOut = String();
   //  assemble the json output
   jsonOut += "{\"";
@@ -173,13 +181,24 @@ const char* ip_to_str(const uint8_t* ipAddr)
 }
 
 /**
- * PRocess the command. 
+ * Process the command. 
  */
 String processCommand(char *device, char *command) {
     Serial.print("Executing command: ");
     Serial.print(command);
     Serial.print(" on device: ");
-    Serial.println(atoi (device));
+    Serial.println(device);
     // TODO: implement. 
-    return "result";
+    String deviceString = String(device);
+    int i = 0;
+    for (int i=0; i < 3; i++)
+    {
+        Serial.println(endpoints[i].getDeviceName());
+        if (deviceString == endpoints[i].getDeviceName())) 
+        {
+            Serial.println("Found device:" + endpoints[i].getDeviceName());
+        }
+    }
+        
 }
+
