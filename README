@@ -2,6 +2,8 @@ Web Command Serial Library
 
 DRAFT - NOT WORKING YET  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+MOVED TO ARDUINO 1.0-RC1 (should not work with older IDE/envs).
+
 Generic Command library used to interact with Arudino + Ethernet shield. Listen for generic command requests, applied to generic "Endpoints". The Web part sends the request to the "endpoints" and waits for the answer. Uses code from RESTduino project (https://github.com/jjg/RESTduino) and the Arduino's Ethernet Shield tutorials. 
 
 TODO: 
