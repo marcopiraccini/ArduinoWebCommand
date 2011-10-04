@@ -75,6 +75,8 @@ void serveRequest() {
 
     while (client.connected()) {
       if (client.available()) {
+        boolean currentLineIsBlank = true;
+         
         char c = client.read();
 
         //  fill url the buffer
@@ -163,9 +165,10 @@ void returnAnswer(EthernetClient client, String device, String command, String r
   jsonOut += response;
   jsonOut += "\"}";
  
-  //  return status
+  //  return value with wildcarded Cross-origin policy
   client.println("HTTP/1.1 200 OK");
   client.println("Content-Type: text/html");
+  client.println("Access-Control-Allow-Origin: *");
   client.println();
   client.println(jsonOut);     
 }
@@ -191,14 +194,15 @@ String processCommand(char *device, char *command) {
     // TODO: implement. 
     String deviceString = String(device);
     int i = 0;
-    for (int i=0; i < 3; i++)
+    for (int i=0; i < sizeof(endpoints)/sizeof(*endpoints); i++)
     {
         Serial.println(endpoints[i].getDeviceName());
-        if (deviceString == endpoints[i].getDeviceName())) 
+        if (deviceString == endpoints[i].getDeviceName()) 
         {
             Serial.println("Found device:" + endpoints[i].getDeviceName());
-        }
+        }        
     }
+    return "response";
         
 }
 
