@@ -4,6 +4,7 @@
 #include <SerialEndpoint.h>
 
 
+
 /*
   Web Command Serial Library
   Generic Command library used to interact with Arudino + Ethernet shield.
@@ -200,6 +201,7 @@ String processCommand(char *device, char *command) {
         if (deviceString == endpoints[i].getDeviceName()) 
         {
             Serial.println("Found device:" + endpoints[i].getDeviceName());
+            endpoints[i].send
         }        
     }
     return "response";

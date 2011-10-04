@@ -2,6 +2,7 @@
 #define serialendpoint_h
 
 #include "Endpoint.h"
+#include <SoftwareSerial.h>
 
 class SerialEndpoint : public Endpoint {
 
@@ -10,6 +11,9 @@ public:
 
   void send(String command);
   String receive();
+
+private:
+  SoftwareSerial serialEndpoint;
 };
 
 #endif
