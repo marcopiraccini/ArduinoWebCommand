@@ -30,10 +30,11 @@ EthernetServer server(80);
 #define BUFSIZE 255
 
 // The used Endpoints
-static SerialEndpoint endpoints[3] = {
-    SerialEndpoint("device1", 1,2),
-    SerialEndpoint("device2", 3,4),
-    SerialEndpoint("device3", 5,6)
+static SerialEndpoint endpoints[4] = {
+    SerialEndpoint("1", 2,3),
+    SerialEndpoint("2", 4,5),
+    SerialEndpoint("3", 6,7),
+    SerialEndpoint("4", 8,9)
 };
 
 
@@ -107,27 +108,31 @@ void serveRequest() {
 
         //  get the first two parameters
         char *device = strtok(clientline,"/");
-        char *command = strtok(NULL,"/");
+        char *data = strtok(NULL,"/");
 
         //  this is where we actually *do something*!
         String outValue;
 
         if(device != NULL){
 
-          if(command != NULL){
+          if(data != NULL){
+            // Some data to send....
             //  set the pin value
-            Serial.print("Command for the device:");
+            Serial.print("Data for the device:");
             Serial.print(device);                  
-            Serial.print(" - Command:");
-            Serial.println(command);               
+            Serial.print(" - Data:");
+            Serial.println(data);               
                         
-            // TODO
-            // PUT ACTIONS FOR THE COMMAND
-            outValue = processCommand(device, command);
+            // Sends the data
+            outValue = sendData(device, data);
             
-            returnAnswer(client, device, command, outValue);
+            returnAnswer(client, device, data, outValue);
             
           } else {
+            
+            // Receive the data            
+            outValue = receiveData(device);
+            
             //  assemble the json output
             returnAnswer(client, device, "NULL", outValue);       
           }
@@ -185,14 +190,13 @@ const char* ip_to_str(const uint8_t* ipAddr)
 }
 
 /**
- * Process the command. 
+ * Sends the data
  */
-String processCommand(char *device, char *command) {
-    Serial.print("Executing command: ");
-    Serial.print(command);
+String sendData(char *device, char *data) {
+    Serial.print("Sending data: ");
+    Serial.print(data);
     Serial.print(" on device: ");
     Serial.println(device);
-    // TODO: implement. 
     String deviceString = String(device);
     int i = 0;
     for (int i=0; i < sizeof(endpoints)/sizeof(*endpoints); i++)
@@ -201,10 +205,30 @@ String processCommand(char *device, char *command) {
         if (deviceString == endpoints[i].getDeviceName()) 
         {
             Serial.println("Found device:" + endpoints[i].getDeviceName());
-            endpoints[i].send
+            endpoints[i].send(data);
         }        
     }
-    return "response";
-        
+    return "response";        
+}
+
+/**
+ * Receive the data
+ */
+String receiveData(char *device) {
+    Serial.print("Receiveing data from device: ");
+    Serial.println(device);
+    String deviceString = String(device);
+    int i = 0;
+    String response;
+    for (int i=0; i < sizeof(endpoints)/sizeof(*endpoints); i++)
+    {
+        Serial.println(endpoints[i].getDeviceName());
+        if (deviceString == endpoints[i].getDeviceName()) 
+        {
+            Serial.println("Found device:" + endpoints[i].getDeviceName());
+            response = endpoints[i].receive();
+        }        
+    }
+    return response;        
 }
 
